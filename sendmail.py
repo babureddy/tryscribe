@@ -3,7 +3,7 @@ server = smtplib.SMTP('smtp.gmail.com', 587)
 server.ehlo()
 server.starttls()
 #Next, log in to the server
-server.login("babureddy1969@gmail.com", "babs331969")
+server.login(os.environ['EMAIL'], os.environ['EMAIL_PASSWORD'])
 
 #Send the mail
 msg = "\r\n".join([
