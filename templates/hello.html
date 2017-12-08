@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+    <head>
+        <title>Campaign Manager</title>
+    </head>
+    <body>
+        <form action="" method="post">
+            {{ form.csrf }}
+			<H2>Create your Campaign</H2>
+			<div class="input text">
+                Campaign Name {{ form.name }}
+                Stages {{ form.stages}}
+                Schedule {{ form.schedule}}
+                Subject {{ form.subject }}
+                Body {{ form.body}}
+                <input type="submit" value="Submit" />
+            </div>
+			<BR><BR>
+ <table border="1">
+ <th> Campaign Name </th>
+ <th> Stages </th>
+ <th> Schedule </th>
+ <th> Subject </th>
+ <th> Body </th>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                    {% for message in messages %}
+                <tr>
+						{% for msg in message[1].split("\\t") %}
+                        <td>{{ msg }}</td>
+						{% endfor %}
+                </tr>
+                    {% endfor %}
+            {% endif %}
+        {% endwith %}
+		</table>
+        </form>
+    </body>
+</html>
