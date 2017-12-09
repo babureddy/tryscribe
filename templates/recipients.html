@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+
+	<head>
+        <title>Campaign Manager Step 2</title>
+       <link rel="stylesheet" media="screen" href ="static/bootstrap.min.css">
+       <link rel="stylesheet" href="static/bootstrap-theme.min.css">
+       <meta name="viewport" content = "width=device-width, initial-scale=1.0">
+ 
+    </head>
+    <body>
+
+		<form enctype="multipart/form-data" action="http://127.0.0.1:5000/upload" method="POST"> 
+            {{ form.csrf }}
+			<H2>Upload Recipients</H2>
+		        <input type="file" id="file" name="file">	
+				<input type="submit" />
+			</form>
+
+    </body>
+</html>
