@@ -1,18 +1,24 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
-    <head>
+
+	<head>
         <title>Campaign Manager</title>
+       <link rel="stylesheet" media="screen" href ="static/bootstrap.min.css">
+       <link rel="stylesheet" href="static/bootstrap-theme.min.css">
+       <meta name="viewport" content = "width=device-width, initial-scale=1.0">
+ 
     </head>
     <body>
+<div class="container">
         <form action="" method="post">
             {{ form.csrf }}
 			<H2>Create your Campaign</H2>
 			<div class="input text">
-                Campaign Name {{ form.name }}
-                Stages {{ form.stages}}
-                Schedule {{ form.schedule}}
-                Subject {{ form.subject }}
-                Body {{ form.body}}
+				<input type="text" class="form-control" id="name" name="name" placeholder="Campaign name"><br><br>
+				<input type="text" class="form-control" id="stages" name="stages" placeholder="Stages"><br><br>
+				<input type="text" class="form-control" id="schedule" name="schedule" placeholder="Schedule"><br><br>
+				<input type="text" class="form-control" id="subject" name="subject" placeholder="Subject"><br><br>
+				<input type="textarea" class="form-control" id="body" name="body" placeholder="Message"><br><br>
                 <input type="submit" value="Submit" />
             </div>
 			<BR><BR>
@@ -35,5 +41,6 @@
         {% endwith %}
 		</table>
         </form>
+		</div>
     </body>
 </html>
