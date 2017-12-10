@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, request
+from flask import Flask, render_template, flash, request, redirect
 from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
 from werkzeug import secure_filename
 import os
@@ -36,7 +36,7 @@ def upload():
         fp = open(app.config['UPLOAD_FOLDER'] + '\\' + filename)
         emails = fp.read()
         db.saveRecipients(emails)		
-        return emails
+    return redirect("/campaigns", code=302)
 
 @app.route("/hello", methods=['GET', 'POST'])
 def hello():
@@ -65,9 +65,9 @@ def hello():
  
     return render_template('hello.html', form=form)
  
-@app.route("/list", methods=['GET', 'POST'])
-def list():
-	return render_template("list.html",rows = db.list())
+@app.route("/campaigns", methods=['GET', 'POST'])
+def campaigns():
+	return render_template("list.html",rows = db.campaigns())
 
 
 @app.route("/sendmail/<id>", methods=['GET', 'POST'])
@@ -90,7 +90,7 @@ def sendmail(id):
 		  body
 		  ])
 		server.sendmail("babureddy1969@gmail",email, msg)
-	return "mail sent ok"
+	return render_template('list.html')
 
 def saveCampaign(request):
     r = {"name":request.form["name"],"stages":request.form["stages"],"schedule":request.form["schedule"],"subject":request.form["subject"],"body":request.form["body"]}

@@ -6,7 +6,7 @@ def read():
         content = f.readlines()
     return content
 
-def list():
+def campaigns():
 	conn = sqlite3.connect('database.db')
 	conn.row_factory = sqlite3.Row
 	cur = conn.cursor()

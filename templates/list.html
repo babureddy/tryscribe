@@ -9,6 +9,9 @@
  
     </head>
     <body>
+	
+	<a href= "/hello">Create Campaign</a><br>
+	
 <div class="container">
 	<H2>My Campaigns</H2>
  <table border="1">
@@ -28,6 +31,7 @@
                <td>{{row['subject']}}</td>	
                <td>{{row['body']}}</td>	
                <td>{{row['email']}}</td>	
+               <td><SELECT> <OPTION>Active</OPTION> <OPTION>Inactive</OPTION> </SELECT></td>	
             </tr>
          {% endfor %}		
 </table>
