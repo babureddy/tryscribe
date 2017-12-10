@@ -22,6 +22,7 @@
  <th> Subject </th>
  <th> Body </th>
  <th> Recipients </th>
+ <!--th> Status</th-->
  <th> Status</th>
  <th> Change Status</th>
 {% for row in rows %}
@@ -33,12 +34,10 @@
                <td>{{row['subject']}}</td>	
                <td>{{row['body']}}</td>	
                <td>{{row['email']}}</td>	
-               <td>{{row['status']}}</td>	
-               <td><form>
-				<INPUT TYPE="radio" id="active_"{{row["id"]}} name="active_"{{row["id"]}}  onchange="handleActiveClick(this)" value="1"</INPUT>
-				<INPUT TYPE="radio" id="active_"{{row["id"]}} name="active_"{{row["id"]}}   onchange="handleInactiveClick(this)" value="0" checked="checked" </INPUT>
-				</form>
-			   </td>	
+               <!--td>{{row['status']}}</td-->	
+               <td>{{row['state']}}</td>	
+               <td><button onclick="window.location.href='/{{row['newstate']}}/{{row['id']}}'" >{{row['newstate']}}</button></td>	
+               <td><button onclick="window.location.href='/delete/{{row['id']}}'" >Delete</button></td>	
             </tr>
          {% endfor %}		
 </table>

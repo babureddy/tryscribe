@@ -5,6 +5,7 @@ import os
 import smtplib
 import sqlite3
 import db
+from flask_mail import Mail, Message
  
 # App  config.
 DEBUG = True
@@ -70,14 +71,21 @@ def campaigns():
 	return render_template("list.html",rows = db.campaigns())
 
 @app.route("/active/<id>", methods=['GET', 'POST'])
+@app.route("/Active/<id>", methods=['GET', 'POST'])
 def active(id):
-	db.updateStatus(id,1);
+	db.updateStatus(id,1)
 	sendmail(id)
 	return redirect("/campaigns", code=302)
 
 @app.route("/inactive/<id>", methods=['GET', 'POST'])
+@app.route("/Inactive/<id>", methods=['GET', 'POST'])
 def inactive(id):
-	db.updateStatus(id,0);
+	db.updateStatus(id,0)
+	return redirect("/campaigns", code=302)
+
+@app.route("/delete/<id>", methods=['GET', 'POST'])
+def delete(id):
+	db.deleteCampaign(id)
 	return redirect("/campaigns", code=302)
 
 @app.route("/sendmail/<id>", methods=['GET', 'POST'])
@@ -85,22 +93,21 @@ def sendmail(id):
 	server = smtplib.SMTP('smtp.gmail.com', 587)
 	server.ehlo()
 	server.starttls()
-	server.login(os.environ('GMAIL_ID'), os.environ('GMAIL_PWD')
+	server.login(os.environ['GMAIL_ID'], os.environ['GMAIL_PWD'])
 	campaign = db.list(id)
 	subject = campaign[0]['subject']
 	body = campaign[0]['body']
 	emails = campaign[0]['email']
-	#Send the mail
-	for email in emails.split("\t"):
-		msg = "\r\n".join([
-		  "From: " + os.environ('GMAIL_ID'),
-		  "To: " + email,
-		  "Subject: " + subject,
-		  "",
-		  body
-		  ])
-		server.sendmail(os.environ('GMAIL)_ID'),email, msg)
-	return render_template('list.html')
+
+	msg = "\r\n".join([
+	  "From: " + os.environ['GMAIL_ID'],
+	  "To: " + emails,
+	  "Subject: " + subject,
+	  "",
+	  body
+	  ])
+	server.sendmail(os.environ['GMAIL_ID'],os.environ['GMAIL_ID'], msg)
+	return redirect("/campaigns", code=302)
 
 def saveCampaign(request):
     r = {"name":request.form["name"],"stages":request.form["stages"],"schedule":request.form["schedule"],"subject":request.form["subject"],"body":request.form["body"]}

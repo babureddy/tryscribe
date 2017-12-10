@@ -1,4 +1,5 @@
 import sqlite3 
+import sys
 conn = sqlite3.connect('database.db')
 	
 def read():
@@ -10,7 +11,7 @@ def campaigns():
 	conn = sqlite3.connect('database.db')
 	conn.row_factory = sqlite3.Row
 	cur = conn.cursor()
-	cur.execute("SELECT * FROM campaign ORDER BY id DESC")
+	cur.execute("SELECT id, name, stages, schedule, subject, body, email, status, case when status='1' then 'Active' else 'Inactive' end as state, case when status='1' then 'Inactive' else 'Active' end as newstate FROM campaign ORDER BY id DESC")
 	rows = cur.fetchall(); 
 	return rows
 
@@ -41,17 +42,20 @@ def saveRecipients(email):
 def updateStatus(id,status):
 	with sqlite3.connect("database.db") as con:
 		cur = con.cursor()
-		sql = "UPDATE campaign set status=" + str(status) + " where id = " + str(id)
-		cur.execute(sql)            
+		sql = "UPDATE campaign SET status=? WHERE id = ?"
+		cur.execute(sql,(status,id))
 		con.commit()
 		return sql
 	
+def deleteCampaign(id):
+	with sqlite3.connect("database.db") as con:
+		cur = con.cursor()
+		sql = "DELETE FROM campaign where id = ?"
+		cur.execute(sql,(id))            
+		con.commit()
+		return sql
+
 def init():	
 	conn = sqlite3.connect('database.db')
 	conn.execute('DROP TABLE campaign')
 	conn.execute('CREATE TABLE campaign (id integer primary key AUTOINCREMENT, name TEXT NOT NULL, stages integer NOT NULL, schedule integer NOT NULL, subject TEXT NOT NULL, body TEXT NOT NULL)')
-
-#request = {"name":"name1","stages":"2","schedule":"2","subject":"s1","body":"msg1"}	
-#saveCampaign(request)
-#list()
-
