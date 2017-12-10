@@ -115,4 +115,4 @@ def saveCampaign(request):
     return "Campaign created successfully"
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0')
