@@ -10,20 +10,24 @@
     </head>
     <body>
 <div class="container">
-			<H2>My Campaigns</H2>
+	<H2>My Campaigns</H2>
  <table border="1">
+ <th> ID </th>
  <th> Campaign Name </th>
  <th> Stages </th>
  <th> Schedule </th>
  <th> Subject </th>
  <th> Body </th>
+ <th> Recipients </th>
 {% for row in rows %}
             <tr>
+               <td>{{row["id"]}}</td>
                <td>{{row["name"]}}</td>
                <td>{{row["stages"]}}</td>
                <td> {{ row["schedule"]}}</td>
                <td>{{row['subject']}}</td>	
                <td>{{row['body']}}</td>	
+               <td>{{row['email']}}</td>	
             </tr>
          {% endfor %}		
 </table>

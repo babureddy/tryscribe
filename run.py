@@ -6,7 +6,7 @@ import smtplib
 import sqlite3
 import db
  
-# App config.
+# App  config.
 DEBUG = True
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -17,8 +17,8 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 conn = sqlite3.connect('database.db')
 #print ("Opened database successfully");
-conn.execute('DROP TABLE campaign')
-conn.execute('CREATE TABLE campaign (id integer primary key AUTOINCREMENT, name TEXT NOT NULL, stages integer NOT NULL, schedule integer NOT NULL, subject TEXT NOT NULL, body TEXT NOT NULL)')
+#conn.execute('DROP TABLE campaign')
+conn.execute('CREATE TABLE if not exists campaign (id integer primary key AUTOINCREMENT, name TEXT NOT NULL, stages integer NOT NULL, schedule integer NOT NULL, subject TEXT NOT NULL, body TEXT NOT NULL, email TEXT )')
 
 class ReusableForm(Form):
     name = TextField('Name:', validators=[validators.required()])
@@ -31,10 +31,12 @@ class ReusableForm(Form):
 def upload():
     if request.method == 'POST':
         file = request.files['file']
-        flash('filename ' + file.filename)
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return "file uploaded successfully"
+        fp = open(app.config['UPLOAD_FOLDER'] + '\\' + filename)
+        emails = fp.read()
+        db.saveRecipients(emails)		
+        return emails
 
 @app.route("/hello", methods=['GET', 'POST'])
 def hello():
@@ -68,23 +70,26 @@ def list():
 	return render_template("list.html",rows = db.list())
 
 
-@app.route("/sendmail", methods=['GET', 'POST'])
-def sendmail():
+@app.route("/sendmail/<id>", methods=['GET', 'POST'])
+def sendmail(id):
 	server = smtplib.SMTP('smtp.gmail.com', 587)
 	server.ehlo()
 	server.starttls()
-	#Next, log in to the server
 	server.login("babureddy1969@gmail.com", "babs331969")
-
+	campaign = db.list(id)
+	subject = campaign[0]['subject']
+	body = campaign[0]['body']
+	emails = campaign[0]['email']
 	#Send the mail
-	msg = "\r\n".join([
-	  "From: babureddy1969@gmail.com",
-	  "To: babureddy@rocketmail.com",
-	  "Subject: Just a message",
-	  "",
-	  "This is cool"
-	  ])
-	server.sendmail("babureddy1969@gmail.com", "babureddy@rocketmail.com", msg)
+	for email in emails.split("\t"):
+		msg = "\r\n".join([
+		  "From: babureddy1969@gmail",
+		  "To: " + email,
+		  "Subject: " + subject,
+		  "",
+		  body
+		  ])
+		server.sendmail("babureddy1969@gmail",email, msg)
 	return "mail sent ok"
 
 def saveCampaign(request):
