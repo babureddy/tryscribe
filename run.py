@@ -18,7 +18,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 conn = sqlite3.connect('database.db')
 #print ("Opened database successfully");
 #conn.execute('DROP TABLE campaign')
-conn.execute('CREATE TABLE if not exists campaign (id integer primary key AUTOINCREMENT, name TEXT NOT NULL, stages integer NOT NULL, schedule integer NOT NULL, subject TEXT NOT NULL, body TEXT NOT NULL, email TEXT )')
+conn.execute('CREATE TABLE if not exists campaign (id integer primary key AUTOINCREMENT, name TEXT NOT NULL, stages integer NOT NULL, schedule integer NOT NULL, subject TEXT NOT NULL, body TEXT NOT NULL, email TEXT, status integer default 0 )')
 
 class ReusableForm(Form):
     name = TextField('Name:', validators=[validators.required()])
@@ -69,13 +69,23 @@ def hello():
 def campaigns():
 	return render_template("list.html",rows = db.campaigns())
 
+@app.route("/active/<id>", methods=['GET', 'POST'])
+def active(id):
+	db.updateStatus(id,1);
+	sendmail(id)
+	return redirect("/campaigns", code=302)
+
+@app.route("/inactive/<id>", methods=['GET', 'POST'])
+def inactive(id):
+	db.updateStatus(id,0);
+	return redirect("/campaigns", code=302)
 
 @app.route("/sendmail/<id>", methods=['GET', 'POST'])
 def sendmail(id):
 	server = smtplib.SMTP('smtp.gmail.com', 587)
 	server.ehlo()
 	server.starttls()
-	server.login("babureddy1969@gmail.com", "babs331969")
+	server.login(os.environ('GMAIL_ID'), os.environ('GMAIL_PWD')
 	campaign = db.list(id)
 	subject = campaign[0]['subject']
 	body = campaign[0]['body']
@@ -83,13 +93,13 @@ def sendmail(id):
 	#Send the mail
 	for email in emails.split("\t"):
 		msg = "\r\n".join([
-		  "From: babureddy1969@gmail",
+		  "From: " + os.environ('GMAIL_ID'),
 		  "To: " + email,
 		  "Subject: " + subject,
 		  "",
 		  body
 		  ])
-		server.sendmail("babureddy1969@gmail",email, msg)
+		server.sendmail(os.environ('GMAIL)_ID'),email, msg)
 	return render_template('list.html')
 
 def saveCampaign(request):

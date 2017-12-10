@@ -22,6 +22,8 @@
  <th> Subject </th>
  <th> Body </th>
  <th> Recipients </th>
+ <th> Status</th>
+ <th> Change Status</th>
 {% for row in rows %}
             <tr>
                <td>{{row["id"]}}</td>
@@ -31,10 +33,25 @@
                <td>{{row['subject']}}</td>	
                <td>{{row['body']}}</td>	
                <td>{{row['email']}}</td>	
-               <td><SELECT> <OPTION>Active</OPTION> <OPTION>Inactive</OPTION> </SELECT></td>	
+               <td>{{row['status']}}</td>	
+               <td><form>
+				<INPUT TYPE="radio" id="active_"{{row["id"]}} name="active_"{{row["id"]}}  onchange="handleActiveClick(this)" value="1"</INPUT>
+				<INPUT TYPE="radio" id="active_"{{row["id"]}} name="active_"{{row["id"]}}   onchange="handleInactiveClick(this)" value="0" checked="checked" </INPUT>
+				</form>
+			   </td>	
             </tr>
          {% endfor %}		
 </table>
 </div>
+<script>
+function handleActiveClick(myRadio) {
+	var xhttp = new XMLHttpRequest();
+    xhttp.open("POST", "/active/" + myRadio.value, true);
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send();
+    var response = JSON.parse(xhttp.responseText);
+	alert(response);
+}
+</script>
 </body>
 </html>

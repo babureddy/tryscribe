@@ -37,6 +37,15 @@ def saveRecipients(email):
 		cur.execute(sql)            
 		con.commit()
 	return "email list updated successfully"
+
+def updateStatus(id,status):
+	with sqlite3.connect("database.db") as con:
+		cur = con.cursor()
+		sql = "UPDATE campaign set status=" + str(status) + " where id = " + str(id)
+		cur.execute(sql)            
+		con.commit()
+		return sql
+	
 def init():	
 	conn = sqlite3.connect('database.db')
 	conn.execute('DROP TABLE campaign')
