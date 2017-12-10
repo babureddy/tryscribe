@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+
+	<head>
+        <title>Campaign Manager</title>
+       <link rel="stylesheet" media="screen" href ="static/bootstrap.min.css">
+       <link rel="stylesheet" href="static/bootstrap-theme.min.css">
+       <meta name="viewport" content = "width=device-width, initial-scale=1.0">
+ 
+    </head>
+    <body>
+<div class="container">
+			<H2>My Campaigns</H2>
+ <table border="1">
+ <th> Campaign Name </th>
+ <th> Stages </th>
+ <th> Schedule </th>
+ <th> Subject </th>
+ <th> Body </th>
+{% for row in rows %}
+            <tr>
+               <td>{{row["name"]}}</td>
+               <td>{{row["stages"]}}</td>
+               <td> {{ row["schedule"]}}</td>
+               <td>{{row['subject']}}</td>	
+               <td>{{row['body']}}</td>	
+            </tr>
+         {% endfor %}		
+</table>
+</div>
+</body>
+</html>

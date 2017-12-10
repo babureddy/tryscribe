@@ -2,11 +2,7 @@
 <html>
 
 	<head>
-        <title>Campaign Manager</title>
-       <link rel="stylesheet" media="screen" href ="static/bootstrap.min.css">
-       <link rel="stylesheet" href="static/bootstrap-theme.min.css">
-       <meta name="viewport" content = "width=device-width, initial-scale=1.0">
- 
+        <title>Campaign Manager</title> 
     </head>
     <body>
 <div class="container">
@@ -21,26 +17,7 @@
 				<input type="textarea" class="form-control" id="body" name="body" placeholder="Message"><br><br>
                 <input type="submit" value="Submit" />
             </div>
-			<BR><BR>
- <table border="1">
- <th> Campaign Name </th>
- <th> Stages </th>
- <th> Schedule </th>
- <th> Subject </th>
- <th> Body </th>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                    {% for message in messages %}
-                <tr>
-						{% for msg in message[1].split("\\t") %}
-                        <td>{{ msg }}</td>
-						{% endfor %}
-                </tr>
-                    {% endfor %}
-            {% endif %}
-        {% endwith %}
-		</table>
-        </form>
+       </form>
 		</div>
     </body>
 </html>

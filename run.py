@@ -2,6 +2,9 @@ from flask import Flask, render_template, flash, request
 from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
 from werkzeug import secure_filename
 import os
+import smtplib
+import sqlite3
+import db
  
 # App config.
 DEBUG = True
@@ -12,22 +15,17 @@ file_name = "c:\\Users\\LOKESH\\tryscribe\\campaign.csv";
 UPLOAD_FOLDER = 'c:\\Users\\LOKESH\\tryscribe\\uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+conn = sqlite3.connect('database.db')
+#print ("Opened database successfully");
+conn.execute('DROP TABLE campaign')
+conn.execute('CREATE TABLE campaign (id integer primary key AUTOINCREMENT, name TEXT NOT NULL, stages integer NOT NULL, schedule integer NOT NULL, subject TEXT NOT NULL, body TEXT NOT NULL)')
+
 class ReusableForm(Form):
     name = TextField('Name:', validators=[validators.required()])
     stages = TextField('Stages:', validators=[validators.required()])
     schedule = TextField('Schedule:', validators=[validators.required()])
     subject = TextField('Subject:', validators=[validators.required()])
     body = TextField('Body:', validators=[validators.required()])
-
-def save(message):
-    file_object = open(file_name, 'a') 
-    file_object.write(message + "\n")
-    file_object.close()
-	
-def read():
-    with open(file_name) as f:
-        content = f.readlines()
-    return content
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -53,7 +51,8 @@ def hello():
         if form.validate():
             # Save the comment here.
             msg = name + "\\t" + stages + "\\t" + schedule + "\\t" + subject + "\\t" + body
-            save(msg)
+            #save(msg)
+            saveCampaign(request)
             with open(file_name) as f:
                 content = ""
                 for line in f.readlines():
@@ -64,5 +63,34 @@ def hello():
  
     return render_template('hello.html', form=form)
  
+@app.route("/list", methods=['GET', 'POST'])
+def list():
+	return render_template("list.html",rows = db.list())
+
+
+@app.route("/sendmail", methods=['GET', 'POST'])
+def sendmail():
+	server = smtplib.SMTP('smtp.gmail.com', 587)
+	server.ehlo()
+	server.starttls()
+	#Next, log in to the server
+	server.login("babureddy1969@gmail.com", "babs331969")
+
+	#Send the mail
+	msg = "\r\n".join([
+	  "From: babureddy1969@gmail.com",
+	  "To: babureddy@rocketmail.com",
+	  "Subject: Just a message",
+	  "",
+	  "This is cool"
+	  ])
+	server.sendmail("babureddy1969@gmail.com", "babureddy@rocketmail.com", msg)
+	return "mail sent ok"
+
+def saveCampaign(request):
+    r = {"name":request.form["name"],"stages":request.form["stages"],"schedule":request.form["schedule"],"subject":request.form["subject"],"body":request.form["body"]}
+    db.saveCampaign(r)
+    return "Campaign created successfully"
+
 if __name__ == "__main__":
     app.run()
